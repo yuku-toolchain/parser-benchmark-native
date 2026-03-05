@@ -98,7 +98,7 @@ A popular React UI component library with enterprise-class design.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/arshad-yaseen/ecmascript-native-parser-benchmark.git
+git clone https://github.com/yuku-toolchain/ecmascript-native-parser-benchmark.git
 cd ecmascript-native-parser-benchmark
 ```
 
