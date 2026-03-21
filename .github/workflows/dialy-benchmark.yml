@@ -1,0 +1,75 @@
+name: Daily Benchmark
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: master
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: true
+
+      - name: Install Hyperfine
+        run: |
+          HYPERFINE_VERSION=$(curl -s "https://api.github.com/repos/sharkdp/hyperfine/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+          curl -Lo hyperfine.deb "https://github.com/sharkdp/hyperfine/releases/latest/download/hyperfine_${HYPERFINE_VERSION}_amd64.deb"
+          sudo apt install -y ./hyperfine.deb
+          rm -rf hyperfine.deb
+
+      - name: Update Zig dependencies (Jam and Yuku)
+        run: |
+          cd zig
+          zig fetch --save git+https://github.com/srijan-paul/jam/#HEAD
+          zig fetch --save git+https://github.com/yuku-toolchain/yuku/#HEAD
+
+      - name: Update Rust dependencies
+        run: |
+          cd rust
+          cargo update
+
+      - name: Install Bun dependencies
+        run: bun install
+
+      - name: Run benchmarks
+        run: bun bench
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update daily benchmark results"
+            git push
+          fi

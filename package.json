@@ -10,8 +10,7 @@
 		"bench:typescript": "hyperfine --warmup 100 './bin/yuku_typescript' './bin/oxc_typescript' './bin/swc_typescript' './bin/jam_typescript' --export-json result/typescript.json",
 		"bench:three": "hyperfine --warmup 100 './bin/yuku_three' './bin/oxc_three' './bin/swc_three' './bin/jam_three' --export-json result/three.json",
 		"bench:antd": "hyperfine --warmup 100 './bin/yuku_antd' './bin/oxc_antd' './bin/swc_antd' --export-json result/antd.json",
-		"readme": "bun scripts/generate-readme.ts",
-		"update-parsers": "cd zig && zig fetch --save git+https://github.com/srijan-paul/jam/#HEAD && zig fetch --save git+https://github.com/yuku-toolchain/yuku/#HEAD && cd ../rust && cargo update"
+		"readme": "bun scripts/generate-readme.ts"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
