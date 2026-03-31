@@ -164,14 +164,9 @@ async function generatePerformanceChart(fileKey: FileKey): Promise<string> {
 	const nonSemantic = parserData.filter((p) => !p.semantic);
 	const semantic = parserData.filter((p) => p.semantic);
 	nonSemantic.sort((a, b) => a.mean - b.mean);
-	const sortedData: typeof parserData = [];
-	for (const entry of nonSemantic) {
-		sortedData.push(entry);
-		const semanticEntry = semantic.find((s) => s.key === `${entry.key}_semantic`);
-		if (semanticEntry) sortedData.push(semanticEntry);
-	}
+	semantic.sort((a, b) => a.mean - b.mean);
 	parserData.length = 0;
-	parserData.push(...sortedData);
+	parserData.push(...nonSemantic, ...semantic);
 
 	const barCount = parserData.length;
 	const chartWidth = 500;
@@ -356,19 +351,17 @@ async function generateBenchmarkTable(fileKey: FileKey): Promise<string> {
 	const nonSemantic = parserEntries.filter((e) => !e.parser.semantic);
 	const semantic = parserEntries.filter((e) => e.parser.semantic);
 
-	nonSemantic.sort((a, b) => {
+	const sortByMean = (a: (typeof parserEntries)[number], b: (typeof parserEntries)[number]) => {
 		if (a.result && b.result) return a.result.mean - b.result.mean;
 		if (a.result && !b.result) return -1;
 		if (!a.result && b.result) return 1;
 		return 0;
-	});
+	};
 
-	const sorted: typeof parserEntries = [];
-	for (const entry of nonSemantic) {
-		sorted.push(entry);
-		const semanticEntry = semantic.find((s) => s.key === `${entry.key}_semantic`);
-		if (semanticEntry) sorted.push(semanticEntry);
-	}
+	nonSemantic.sort(sortByMean);
+	semantic.sort(sortByMean);
+
+	const sorted: typeof parserEntries = [...nonSemantic, ...semantic];
 
 	const hasMemoryData = sorted.some(
 		({ result }) => result && getPeakMemory(result) !== null,
@@ -382,7 +375,16 @@ async function generateBenchmarkTable(fileKey: FileKey): Promise<string> {
 		lines.push("|--------|------|-----|-----|");
 	}
 
+	let semanticSeparatorAdded = false;
 	for (const { parser, result } of sorted) {
+		if (parser.semantic && !semanticSeparatorAdded) {
+			if (hasMemoryData) {
+				lines.push("| | | | | |");
+			} else {
+				lines.push("| | | | |");
+			}
+			semanticSeparatorAdded = true;
+		}
 		if (result) {
 			if (hasMemoryData) {
 				const memory = getPeakMemory(result);
