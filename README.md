@@ -1,6 +1,6 @@
-# ECMAScript Native Parser Benchmark
+# ECMAScript Parser Benchmark (Native)
 
-Benchmark ECMAScript parsers implemented in native languages.
+Benchmark ECMAScript parsers compiled to native binaries, measuring raw parsing speed without JavaScript runtime overhead.
 
 ## System
 
