@@ -55,6 +55,9 @@ jobs:
       - name: Run benchmarks
         run: bun bench
 
+      - name: Run benchmarks again
+        run: bun bench
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
