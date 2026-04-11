@@ -51,19 +51,19 @@ jobs:
       - name: Install Bun dependencies
         run: bun install
 
-      - name: Isolate CPU
+      - name: Isolate CPU for stable benchmarks
         run: |
-          # Set CPU frequency governor to performance to prevent throttling
-          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null || true
-          # Disable turbo boost for consistent clock speeds
-          echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo 2>/dev/null || true
-          # Stop non-essential services that could cause interference
-          sudo systemctl stop cron unattended-upgrades irqbalance 2>/dev/null || true
+          # Quit non-essential GUI/background apps that could cause interference
+          sudo killall -9 Spotlight mds_stores mds || true
+          # Disable Spotlight indexing
+          sudo mdutil -a -i off 2>/dev/null || true
+          # Disable App Nap to prevent macOS from throttling processes
+          defaults write NSGlobalDomain NSAppSleepDisabled -bool YES 2>/dev/null || true
 
       - name: Run benchmarks
         run: |
-          # Pin benchmark process to CPU core 0 with highest priority
-          sudo nice -n -20 taskset -c 0 bun bench
+          # Run with highest scheduling priority
+          sudo nice -n -20 bun bench
 
       - name: Configure Git
         run: |
