@@ -38,10 +38,9 @@ jobs:
       - name: Install Hyperfine
         run: brew install hyperfine
 
-      - name: Update Zig dependencies (Jam and Yuku)
+      - name: Update Zig dependencies (Yuku)
         run: |
           cd zig
-          zig fetch --save git+https://github.com/srijan-paul/jam/#HEAD
           zig fetch --save git+https://github.com/yuku-toolchain/yuku/#HEAD
 
       - name: Update Rust dependencies
@@ -52,11 +51,19 @@ jobs:
       - name: Install Bun dependencies
         run: bun install
 
-      - name: Run benchmarks
-        run: bun bench
+      - name: Isolate CPU
+        run: |
+          # Set CPU frequency governor to performance to prevent throttling
+          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null || true
+          # Disable turbo boost for consistent clock speeds
+          echo 1 | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo 2>/dev/null || true
+          # Stop non-essential services that could cause interference
+          sudo systemctl stop cron unattended-upgrades irqbalance 2>/dev/null || true
 
-      - name: Run benchmarks again
-        run: bun bench
+      - name: Run benchmarks
+        run: |
+          # Pin benchmark process to CPU core 0 with highest priority
+          sudo nice -n -20 taskset -c 0 bun bench
 
       - name: Configure Git
         run: |

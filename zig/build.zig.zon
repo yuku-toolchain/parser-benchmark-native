@@ -4,10 +4,6 @@
     .minimum_zig_version = "0.16.0-dev.2368+380ea6fb5",
     .fingerprint = 0xa1bd1b16d2a0c0b3,
     .dependencies = .{
-        .jam = .{
-            .url = "git+https://github.com/srijan-paul/jam/?ref=HEAD#f4edda4eb27f37aaeae4f3f9b29e7ab532b7665d",
-            .hash = "jam-0.0.0-1QhPrgOUCQAHsL-kEUc6-LbRRWBfkyrxriEEp8viHV3W",
-        },
         .yuku = .{
             .url = "git+https://github.com/yuku-toolchain/yuku/?ref=HEAD#386838f732a9c5a94dd50146c9fa9358e66d9c3a",
             .hash = "yuku-0.0.0-m6rank6MCQAeCA6BEpqQpgHgyGivYyPcYfHN7kxruBra",

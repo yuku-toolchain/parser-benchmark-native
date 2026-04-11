@@ -46,14 +46,6 @@ const PARSERS = {
 		url: "https://github.com/oxc-project/oxc",
 		semantic: true,
 	},
-	jam: {
-		name: "Jam",
-		language: "Zig",
-		description:
-			"A JavaScript toolchain written in Zig featuring a parser, linter, formatter, printer, and vulnerability scanner.",
-		url: "https://github.com/srijan-paul/jam",
-		semantic: false,
-	},
 } as const;
 
 const CHART_COLORS: Record<string, string> = {
@@ -62,7 +54,6 @@ const CHART_COLORS: Record<string, string> = {
 	swc: "#4CC9F0",
 	yuku_semantic: "#E8890C",
 	oxc_semantic: "#B5179E",
-	jam: "#7209B7",
 };
 
 const FILES = {
@@ -149,7 +140,7 @@ function getParserEntries(data: { results: BenchmarkResult[] }, semantic: boolea
 	}
 
 	entries.sort((a, b) => {
-		if (a.result && b.result) return a.result.mean - b.result.mean;
+		if (a.result && b.result) return a.result.median - b.result.median;
 		if (a.result && !b.result) return -1;
 		if (!a.result && b.result) return 1;
 		return 0;
@@ -163,10 +154,10 @@ async function generateChart(entries: ParserEntry[], chartName: string): Promise
 	if (data.length === 0) return "";
 
 	const labels = data.map((e) => e.name);
-	const meanData = data.map((e) => e.result!.mean * 1000);
+	const medianData = data.map((e) => e.result!.median * 1000);
 	const colors = data.map((e) => CHART_COLORS[e.key] ?? "#888888");
 
-	const maxTime = Math.max(...meanData);
+	const maxTime = Math.max(...medianData);
 	const niceSteps = [10, 20, 25, 50, 100, 200, 250, 500];
 	const rawStep = maxTime / 4;
 	const step = niceSteps.find((s) => s >= rawStep) || Math.ceil(rawStep / 100) * 100;
@@ -187,7 +178,7 @@ async function generateChart(entries: ParserEntry[], chartName: string): Promise
 			labels,
 			datasets: [
 				{
-					data: meanData,
+					data: medianData,
 					backgroundColor: colors,
 					borderWidth: 0,
 					borderRadius: 0,
@@ -259,11 +250,11 @@ function generateTable(entries: ParserEntry[]): string {
 	const lines: string[] = [];
 
 	if (hasMemoryData) {
-		lines.push("| Parser | Mean | Min | Max | Peak Memory (RSS) |");
-		lines.push("|--------|------|-----|-----|----|");
+		lines.push("| Parser | Median | Min | Max | Peak Memory (RSS) |");
+		lines.push("|--------|--------|-----|-----|----|");
 	} else {
-		lines.push("| Parser | Mean | Min | Max |");
-		lines.push("|--------|------|-----|-----|");
+		lines.push("| Parser | Median | Min | Max |");
+		lines.push("|--------|--------|-----|-----|");
 	}
 
 	for (const { name, result } of entries) {
@@ -277,8 +268,8 @@ function generateTable(entries: ParserEntry[]): string {
 		const memory = getPeakMemory(result);
 		const memoryStr = memory ? formatMemory(memory) : "-";
 		lines.push(hasMemoryData
-			? `| ${name} | ${formatTime(result.mean)} | ${formatTime(result.min)} | ${formatTime(result.max)} | ${memoryStr} |`
-			: `| ${name} | ${formatTime(result.mean)} | ${formatTime(result.min)} | ${formatTime(result.max)} |`);
+			? `| ${name} | ${formatTime(result.median)} | ${formatTime(result.min)} | ${formatTime(result.max)} | ${memoryStr} |`
+			: `| ${name} | ${formatTime(result.median)} | ${formatTime(result.min)} | ${formatTime(result.max)} |`);
 	}
 
 	return lines.join("\n");
@@ -422,7 +413,7 @@ function generateMethodologySection(): string {
 
 All parsers are compiled with release optimizations. Source files are embedded at compile time (Zig \`@embedFile\`, Rust \`include_str!\`) to eliminate file I/O from measurements. Rust parsers are built with \`cargo build --release\` using LTO, a single codegen unit, and symbol stripping. Zig parsers are built with \`zig build --release=fast\`.
 
-Each parser is benchmarked using [Hyperfine](https://github.com/sharkdp/hyperfine) with warmup runs followed by multiple timed runs. Each run measures the time to parse the entire file into an AST and free the allocated memory.`;
+Each parser is benchmarked using [Hyperfine](https://github.com/sharkdp/hyperfine) with \`--shell=none\` to eliminate shell overhead, 30 warmup runs, and a minimum of 200 timed runs. Results use the **median** rather than the mean to provide stable, outlier-resistant measurements. In CI, the CPU frequency governor is set to \`performance\` mode and processes are pinned to a dedicated core to minimize scheduling noise. Each run measures the time to parse the entire file into an AST and free the allocated memory.`;
 }
 
 async function main() {

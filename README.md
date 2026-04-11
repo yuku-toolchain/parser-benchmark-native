@@ -7,9 +7,9 @@ Benchmarks for ECMAScript parsers compiled to native binaries (Zig, Rust), measu
 | Property | Value |
 |----------|-------|
 | OS | macOS 24.6.0 (arm64) |
-| CPU | Apple M4 Pro (Virtual) |
-| Cores | 6 |
-| Memory | 14 GB |
+| CPU | Apple M3 |
+| Cores | 8 |
+| Memory | 16 GB |
 
 ## Parsers
 
@@ -31,12 +31,6 @@ A high-performance JavaScript and TypeScript parser written in Rust.
 
 An extensible Rust-based platform for compiling and bundling JavaScript and TypeScript.
 
-### [Jam](https://github.com/srijan-paul/jam)
-
-**Language:** Zig
-
-A JavaScript toolchain written in Zig featuring a parser, linter, formatter, printer, and vulnerability scanner.
-
 ## Benchmarks
 
 ### [typescript.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/typescript.js)
@@ -45,12 +39,11 @@ A JavaScript toolchain written in Zig featuring a parser, linter, formatter, pri
 
 ![Bar chart comparing native parser speeds for typescript.js](charts/typescript.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Oxc | 30.69 ms | 25.69 ms | 61.46 ms | 53.0 MB |
-| Yuku | 31.08 ms | 26.59 ms | 34.81 ms | 40.7 MB |
-| Jam | 48.03 ms | 46.26 ms | 53.49 ms | 186.9 MB |
-| SWC | 59.42 ms | 52.79 ms | 91.54 ms | 88.9 MB |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Oxc | 27.99 ms | 27.32 ms | 33.85 ms |
+| Yuku | 28.72 ms | 28.02 ms | 29.69 ms |
+| SWC | 55.56 ms | 54.03 ms | 61.89 ms |
 
 ### [three.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/three.js)
 
@@ -58,12 +51,11 @@ A JavaScript toolchain written in Zig featuring a parser, linter, formatter, pri
 
 ![Bar chart comparing native parser speeds for three.js](charts/three.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Oxc | 6.69 ms | 6.34 ms | 8.98 ms | 12.9 MB |
-| Yuku | 7.30 ms | 7.03 ms | 8.49 ms | 11.4 MB |
-| SWC | 11.67 ms | 11.36 ms | 12.57 ms | 21.3 MB |
-| Jam | 11.94 ms | 11.47 ms | 15.58 ms | 40.2 MB |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Oxc | 7.35 ms | 7.13 ms | 15.41 ms |
+| Yuku | 8.21 ms | 8.00 ms | 19.35 ms |
+| SWC | 12.71 ms | 12.53 ms | 13.26 ms |
 
 ### [react.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/react.js)
 
@@ -71,12 +63,11 @@ A JavaScript toolchain written in Zig featuring a parser, linter, formatter, pri
 
 ![Bar chart comparing native parser speeds for react.js](charts/react.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Yuku | 1.22 ms | 0.87 ms | 2.16 ms | 2.0 MB |
-| Oxc | 1.29 ms | 0.91 ms | 13.43 ms | 2.3 MB |
-| SWC | 1.48 ms | 1.09 ms | 2.75 ms | 3.0 MB |
-| Jam | Failed to parse | - | - | - |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Oxc | 1.42 ms | 1.25 ms | 3.44 ms |
+| Yuku | 1.56 ms | 1.41 ms | 9.06 ms |
+| SWC | 1.82 ms | 1.63 ms | 11.73 ms |
 
 ## Semantic
 
@@ -90,28 +81,28 @@ The benchmarks below measure parsing followed by this additional pass, which bui
 
 ![Bar chart comparing parser speeds with semantic analysis for typescript.js](charts/typescript_semantic.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Yuku + Semantic | 42.32 ms | 41.85 ms | 43.30 ms | 186.9 MB |
-| Oxc + Semantic | 59.57 ms | 58.82 ms | 62.70 ms | 186.9 MB |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Yuku + Semantic | 47.12 ms | 46.11 ms | 94.11 ms |
+| Oxc + Semantic | 64.48 ms | 62.72 ms | 139.23 ms |
 
 ### [three.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/three.js)
 
 ![Bar chart comparing parser speeds with semantic analysis for three.js](charts/three_semantic.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Yuku + Semantic | 10.69 ms | 10.39 ms | 15.26 ms | 40.2 MB |
-| Oxc + Semantic | 12.62 ms | 12.30 ms | 13.78 ms | 40.2 MB |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Yuku + Semantic | 11.93 ms | 11.68 ms | 24.42 ms |
+| Oxc + Semantic | 13.78 ms | 13.49 ms | 23.87 ms |
 
 ### [react.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/react.js)
 
 ![Bar chart comparing parser speeds with semantic analysis for react.js](charts/react_semantic.png)
 
-| Parser | Mean | Min | Max | Peak Memory (RSS) |
-|--------|------|-----|-----|----|
-| Yuku + Semantic | 1.37 ms | 1.05 ms | 2.10 ms | 3.0 MB |
-| Oxc + Semantic | 1.44 ms | 1.15 ms | 2.67 ms | 3.0 MB |
+| Parser | Median | Min | Max |
+|--------|--------|-----|-----|
+| Yuku + Semantic | 1.74 ms | 1.59 ms | 36.62 ms |
+| Oxc + Semantic | 1.76 ms | 1.62 ms | 36.29 ms |
 
 ## Run Benchmarks
 
@@ -149,4 +140,4 @@ This will build all parsers and run benchmarks on all test files. Results are sa
 
 All parsers are compiled with release optimizations. Source files are embedded at compile time (Zig `@embedFile`, Rust `include_str!`) to eliminate file I/O from measurements. Rust parsers are built with `cargo build --release` using LTO, a single codegen unit, and symbol stripping. Zig parsers are built with `zig build --release=fast`.
 
-Each parser is benchmarked using [Hyperfine](https://github.com/sharkdp/hyperfine) with warmup runs followed by multiple timed runs. Each run measures the time to parse the entire file into an AST and free the allocated memory.
+Each parser is benchmarked using [Hyperfine](https://github.com/sharkdp/hyperfine) with `--shell=none` to eliminate shell overhead, 30 warmup runs, and a minimum of 200 timed runs. Results use the **median** rather than the mean to provide stable, outlier-resistant measurements. In CI, the CPU frequency governor is set to `performance` mode and processes are pinned to a dedicated core to minimize scheduling noise. Each run measures the time to parse the entire file into an AST and free the allocated memory.
