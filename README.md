@@ -7,9 +7,9 @@ Benchmarks for ECMAScript parsers compiled to native binaries (Zig, Rust), measu
 | Property | Value |
 |----------|-------|
 | OS | macOS 24.6.0 (arm64) |
-| CPU | Apple M3 |
-| Cores | 8 |
-| Memory | 16 GB |
+| CPU | Apple M4 Pro (Virtual) |
+| Cores | 6 |
+| Memory | 14 GB |
 
 ## Parsers
 
@@ -39,11 +39,11 @@ An extensible Rust-based platform for compiling and bundling JavaScript and Type
 
 ![Bar chart comparing native parser speeds for typescript.js](charts/typescript.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Oxc | 27.99 ms | 27.32 ms | 33.85 ms |
-| Yuku | 28.72 ms | 28.02 ms | 29.69 ms |
-| SWC | 55.56 ms | 54.03 ms | 61.89 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Oxc | 30.15 ms | 26.57 ms | 37.25 ms | 52.8 MB |
+| Yuku | 30.19 ms | 26.32 ms | 46.83 ms | 40.6 MB |
+| SWC | 63.64 ms | 57.23 ms | 86.87 ms | 88.9 MB |
 
 ### [three.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/three.js)
 
@@ -51,11 +51,11 @@ An extensible Rust-based platform for compiling and bundling JavaScript and Type
 
 ![Bar chart comparing native parser speeds for three.js](charts/three.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Oxc | 7.35 ms | 7.13 ms | 15.41 ms |
-| Yuku | 8.21 ms | 8.00 ms | 19.35 ms |
-| SWC | 12.71 ms | 12.53 ms | 13.26 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Oxc | 6.81 ms | 6.45 ms | 8.72 ms | 13.0 MB |
+| Yuku | 7.20 ms | 7.08 ms | 9.61 ms | 11.5 MB |
+| SWC | 11.37 ms | 11.17 ms | 13.29 ms | 21.3 MB |
 
 ### [react.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/react.js)
 
@@ -63,11 +63,11 @@ An extensible Rust-based platform for compiling and bundling JavaScript and Type
 
 ![Bar chart comparing native parser speeds for react.js](charts/react.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Oxc | 1.42 ms | 1.25 ms | 3.44 ms |
-| Yuku | 1.56 ms | 1.41 ms | 9.06 ms |
-| SWC | 1.82 ms | 1.63 ms | 11.73 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Oxc | 1.18 ms | 1.14 ms | 1.67 ms | 2.2 MB |
+| Yuku | 1.27 ms | 1.21 ms | 1.98 ms | 2.0 MB |
+| SWC | 1.57 ms | 1.46 ms | 4.13 ms | 3.0 MB |
 
 ## Semantic
 
@@ -81,28 +81,28 @@ The benchmarks below measure parsing followed by this additional pass, which bui
 
 ![Bar chart comparing parser speeds with semantic analysis for typescript.js](charts/typescript_semantic.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Yuku + Semantic | 47.12 ms | 46.11 ms | 94.11 ms |
-| Oxc + Semantic | 64.48 ms | 62.72 ms | 139.23 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Yuku + Semantic | 49.09 ms | 42.18 ms | 53.14 ms | 88.9 MB |
+| Oxc + Semantic | 59.43 ms | 58.70 ms | 99.47 ms | 93.5 MB |
 
 ### [three.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/three.js)
 
 ![Bar chart comparing parser speeds with semantic analysis for three.js](charts/three_semantic.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Yuku + Semantic | 11.93 ms | 11.68 ms | 24.42 ms |
-| Oxc + Semantic | 13.78 ms | 13.49 ms | 23.87 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Yuku + Semantic | 10.47 ms | 10.28 ms | 12.14 ms | 21.3 MB |
+| Oxc + Semantic | 12.46 ms | 12.27 ms | 19.16 ms | 22.0 MB |
 
 ### [react.js](https://raw.githubusercontent.com/yuku-toolchain/parser-benchmark-files/refs/heads/main/react.js)
 
 ![Bar chart comparing parser speeds with semantic analysis for react.js](charts/react_semantic.png)
 
-| Parser | Median | Min | Max |
-|--------|--------|-----|-----|
-| Yuku + Semantic | 1.74 ms | 1.59 ms | 36.62 ms |
-| Oxc + Semantic | 1.76 ms | 1.62 ms | 36.29 ms |
+| Parser | Median | Min | Max | Peak Memory (RSS) |
+|--------|--------|-----|-----|----|
+| Yuku + Semantic | 1.44 ms | 1.37 ms | 2.89 ms | 3.0 MB |
+| Oxc + Semantic | 1.51 ms | 1.45 ms | 2.83 ms | 3.0 MB |
 
 ## Run Benchmarks
 
